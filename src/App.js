@@ -5,7 +5,7 @@ import { Stage, Layer, Circle, Line } from 'react-konva';
 import './App.css';
 
 class App extends Component {
-
+  nodeCount = 0;
   constructor(props) {
     super(props);
 
@@ -16,22 +16,22 @@ class App extends Component {
       numNodes: 5,
       endpoints: [],
       radius: 10,
-      test: ''
     };
   }
 
-  nodePos() {
+  nodePos(count) {
+    this.nodeCount++;
     let data =
     {
       x: Math.random() * this.state.stageWidth,
       y: Math.random() * this.state.stageWidth,
       color: 'red'
     }
+ 
     this.setState((state, props) => {
       nodeList: state.nodeList.push(data);
       endpoints: state.endpoints.push(data.x, data.y);
     });
-    // console.log(this.state)
     return data;
   }
 
@@ -51,10 +51,19 @@ class App extends Component {
   newGraph() {
     this.setState({
       nodeList: [],
-      endpoints:[]
+      endpoints: []
+        });
+
+    this.nodeCount = 0;
+    this.nodePos();
+    console.log(this.state)
+  }
+
+  addEdges() {
+    this.setState((state, props) => {
+      endpoints: state.endpoints.push(state.nodeList[0].x, state.nodeList[0].y)
     })
-     this.nodePos();
-     console.log(this.state)
+    console.log(this.state.numNodes)
   }
 
 
@@ -78,6 +87,8 @@ class App extends Component {
               {[...Array(this.state.numNodes)].map((nodeData = this.nodePos(), i) =>
                 <Circle key={i} radius={this.state.radius} x={nodeData.x} y={nodeData.y} fill={nodeData.color} />
               )}
+
+              {this.addEdges()}
 
             </Layer>
           </Stage>
