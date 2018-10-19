@@ -1,10 +1,7 @@
 
 import React, { Component } from 'react';
-import Konva from 'konva';
-import { Stage, Layer, Star, Text, Circle, Line } from 'react-konva';
+import { Stage, Layer, Circle, Line } from 'react-konva';
 
-import MyCircle from './MyCircle';
-import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
@@ -17,11 +14,10 @@ class App extends Component {
       stageHeight: window.innerHeight,
       nodeList: [],
       numNodes: 5,
-      endpoints:[],
+      endpoints: [],
       radius: 10,
-
+      test: ''
     };
-
   }
 
   nodePos() {
@@ -29,14 +25,38 @@ class App extends Component {
     {
       x: Math.random() * this.state.stageWidth,
       y: Math.random() * this.state.stageWidth,
+      color: 'red'
     }
     this.setState((state, props) => {
       nodeList: state.nodeList.push(data);
       endpoints: state.endpoints.push(data.x, data.y);
     });
-    console.log(this.state)
+    // console.log(this.state)
     return data;
   }
+
+  addNode() {
+    this.setState((state, props) => {
+      numNodes: this.state.numNodes++;
+    });
+    console.log(this.state.numNodes);
+  }
+
+  subtractNode() {
+    this.setState((state, props) => {
+      numNodes: this.state.numNodes--;
+    });
+  }
+
+  newGraph() {
+    this.setState({
+      nodeList: [],
+      endpoints:[]
+    })
+     this.nodePos();
+     console.log(this.state)
+  }
+
 
   test() {
     let data = this.state.nodeList;
@@ -51,25 +71,22 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-
-          <button onClick={this.tap}>
-            test button
-          </button>
-
           <Stage width={this.state.stageWidth} height={this.state.stageHeight}>
             <Layer>
 
-
-
               <Line points={this.state.endpoints} stroke="blue" />
-              {[...Array(this.state.numNodes)].map((position = this.nodePos(), i) =>
-                <Circle key={i} radius={this.state.radius} x={position.x} y={position.y} fill="red" />
+              {[...Array(this.state.numNodes)].map((nodeData = this.nodePos(), i) =>
+                <Circle key={i} radius={this.state.radius} x={nodeData.x} y={nodeData.y} fill={nodeData.color} />
               )}
-
-
 
             </Layer>
           </Stage>
+
+          <h3>Number of nodes: {this.state.numNodes}</h3>
+          <button onClick={this.addNode.bind(this)}>+1</button>
+          <button onClick={this.subtractNode.bind(this)}>-1</button>
+          <button onClick={this.newGraph.bind(this)}>New Graph</button>
+
         </header>
       </div>
     );
